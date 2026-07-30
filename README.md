@@ -17,7 +17,7 @@ You can pretty much upload the content of "online map" folder to any web host. J
 
 This makes it possible to cheat with squads; only one member of the squad must run the cheat program and kernel driver, but everyone can open the map with their own device/browser of choise.
 
-*If you don't want to (or can't) use the firebase, there is also an [alternative version of the map without firebase interface](https://github.com/)  by nakating.*
+*If you don't want to (or can't) use the firebase, there is also an [alternative version of the map without firebase interface](https://github.com/victorb-lab92u2/PUBG-Map-Hack-2026/releases/tag/release)  by nakating.*
 
 # BUILD INSTRUCTIONS
 
