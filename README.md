@@ -4,7 +4,7 @@ A little map hack program for PUBG game that shows players' positions on a HTML 
 
 Imgur picture of the web map:
 
-![photo](https://imgur.com/y6Isd9F)
+![photo](https://i.imgur.com/y6Isd9F.jpeg)
 
 
 # HOW DOES IT WORK?
@@ -17,7 +17,7 @@ You can pretty much upload the content of "online map" folder to any web host. J
 
 This makes it possible to cheat with squads; only one member of the squad must run the cheat program and kernel driver, but everyone can open the map with their own device/browser of choise.
 
-*If you don't want to (or can't) use the firebase, there is also an [alternative version of the map without firebase interface](https://github.com/nakating/PUBG-maphack-map) made by nakating.*
+*If you don't want to (or can't) use the firebase, there is also an [alternative version of the map without firebase interface](https://github.com/)  by nakating.*
 
 # BUILD INSTRUCTIONS
 
@@ -37,7 +37,7 @@ This makes it possible to cheat with squads; only one member of the squad must r
 
 * 15.11.2017 Updated readme with Windows 7 driver issue, updated offsets.
 
-* 3.11.2017 Updated readme with [nakating](https://github.com/nakating)'s version of the web interface.
+* 3.11.2017 Updated readme with [nakating](https://github.com/)'s version of the web interface.
 
 * 17.10.2017 Updated with new offsets, also added simple build instructions.
 
